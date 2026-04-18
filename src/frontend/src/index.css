@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: "Instrument Serif";
+    --font-body: "Satoshi";
+    --font-mono: "Geist Mono";
+    --radius: 0.375rem;
+
+    --background: 0.1 0 0;
+    --foreground: 0.95 0.005 0;
+    --card: 0.16 0.008 50;
+    --card-foreground: 0.95 0.005 0;
+    --popover: 0.18 0.01 50;
+    --popover-foreground: 0.95 0.005 0;
+
+    --primary: 0.68 0.18 70;
+    --primary-foreground: 0.1 0 0;
+
+    --secondary: 0.18 0.01 50;
+    --secondary-foreground: 0.9 0.005 0;
+    --muted: 0.2 0.01 50;
+    --muted-foreground: 0.55 0.005 0;
+
+    --accent: 0.75 0.22 60;
+    --accent-foreground: 0.1 0 0;
+
+    --destructive: 0.62 0.28 15;
+    --destructive-foreground: 0.95 0.005 0;
+
+    --border: 0.22 0.012 50;
+    --input: 0.22 0.012 50;
+    --ring: 0.68 0.18 70;
+
+    --chart-1: 0.68 0.18 70;
+    --chart-2: 0.75 0.22 60;
+    --chart-3: 0.65 0.2 45;
+    --chart-4: 0.62 0.28 15;
+    --chart-5: 0.68 0.15 50;
+
+    --sidebar: 0.16 0.008 50;
+    --sidebar-foreground: 0.95 0.005 0;
+    --sidebar-primary: 0.68 0.18 70;
+    --sidebar-primary-foreground: 0.1 0 0;
+    --sidebar-accent: 0.75 0.22 60;
+    --sidebar-accent-foreground: 0.1 0 0;
+    --sidebar-border: 0.22 0.012 50;
+    --sidebar-ring: 0.68 0.18 70;
+  }
+
+  .dark {
+    --background: 0.1 0 0;
+    --foreground: 0.95 0.005 0;
+    --card: 0.16 0.008 50;
+    --card-foreground: 0.95 0.005 0;
+    --popover: 0.18 0.01 50;
+    --popover-foreground: 0.95 0.005 0;
+
+    --primary: 0.68 0.18 70;
+    --primary-foreground: 0.1 0 0;
+
+    --secondary: 0.18 0.01 50;
+    --secondary-foreground: 0.9 0.005 0;
+    --muted: 0.2 0.01 50;
+    --muted-foreground: 0.55 0.005 0;
+
+    --accent: 0.75 0.22 60;
+    --accent-foreground: 0.1 0 0;
+
+    --destructive: 0.62 0.28 15;
+    --destructive-foreground: 0.95 0.005 0;
+
+    --border: 0.22 0.012 50;
+    --input: 0.22 0.012 50;
+    --ring: 0.68 0.18 70;
+
+    --chart-1: 0.68 0.18 70;
+    --chart-2: 0.75 0.22 60;
+    --chart-3: 0.65 0.2 45;
+    --chart-4: 0.62 0.28 15;
+    --chart-5: 0.68 0.15 50;
+
+    --sidebar: 0.16 0.008 50;
+    --sidebar-foreground: 0.95 0.005 0;
+    --sidebar-primary: 0.68 0.18 70;
+    --sidebar-primary-foreground: 0.1 0 0;
+    --sidebar-accent: 0.75 0.22 60;
+    --sidebar-accent-foreground: 0.1 0 0;
+    --sidebar-border: 0.22 0.012 50;
+    --sidebar-ring: 0.68 0.18 70;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .gps-active {
+    @apply w-2 h-2 rounded-full bg-primary animate-pulse;
+  }
+
+  .gps-acquiring {
+    @apply w-2 h-2 rounded-full bg-chart-2 animate-pulse;
+  }
+
+  .gps-error {
+    @apply w-2 h-2 rounded-full bg-destructive;
+  }
+
+  .territory-gold {
+    @apply bg-primary;
+  }
+
+  .territory-amber {
+    @apply bg-accent;
+  }
+
+  .territory-orange {
+    @apply bg-chart-3;
+  }
+
+  .territory-red {
+    @apply bg-destructive;
+  }
+
+  .glass-card {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background-color: oklch(var(--card) / 0.75);
+    border: 1px solid oklch(var(--border) / 0.35);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px oklch(0 0 0 / 0.35), inset 0 1px 1px
+      oklch(1 0 0 / 0.05);
+  }
+
+  .glass-button {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--primary) / 0.9),
+      oklch(0.58 0.22 55 / 0.9)
+    );
+    color: oklch(var(--primary-foreground));
+    border: 1px solid oklch(var(--primary) / 0.5);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px oklch(var(--primary) / 0.3);
+  }
+
+  .glass-button:hover {
+    box-shadow: 0 6px 24px oklch(var(--primary) / 0.45);
+    transform: translateY(-1px);
+  }
+
+  .glass-button:active {
+    transform: scale(0.97);
+  }
+
+  .gold-accent-border {
+    border-left: 3px solid oklch(var(--primary));
+    box-shadow: -2px 0 12px oklch(var(--primary) / 0.3);
+  }
+
+  .hover-lift {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px oklch(0 0 0 / 0.4);
+  }
+}
+
+/* GPS pulsing marker keyframe — used in inline Leaflet HTML & Google Maps DivIcon */
+@keyframes gps-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("/assets/fonts/InstrumentSerif-Italic.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/assets/fonts/GeistMono.woff2") format("woff2");
+  font-display: swap;
+}

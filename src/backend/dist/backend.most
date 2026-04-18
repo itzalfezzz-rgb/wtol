@@ -1,0 +1,201 @@
+// Version: 1.0.0
+type ChallengeType__272281925 =
+  {#mostDistance; #mostTakedowns; #mostTerritory; #mostWorkouts};
+type CoachConversation__818276906 =
+  {
+    var messages : [CoachMessage__271404716];
+    var nextMessageId : Nat;
+    userId : UserId__158757552
+  };
+type CoachMessageId__956821889 = Nat;
+type CoachMessage__271404716 =
+  {
+    content : Text;
+    createdAt : Timestamp__301639476;
+    id : CoachMessageId__956821889;
+    role : MessageRole__631012444
+  };
+type Comment__220674806 =
+  {
+    author : UserId__158757552;
+    content : Text;
+    createdAt : Timestamp__301639476;
+    id : Nat
+  };
+type CompetitionId__1068863808 = Nat;
+type Competition__1005639706 =
+  {
+    challengeType : ChallengeType__272281925;
+    endsAt : Timestamp__301639476;
+    id : CompetitionId__1068863808;
+    var isActive : Bool;
+    monthYear : Text;
+    prizes : [Text];
+    var standings : [Standing__660882045];
+    startsAt : Timestamp__301639476
+  };
+type Coordinate__119226227 = {lat : Float; lng : Float};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type FitnessLevel__186891914 = {#advanced; #beginner; #elite; #intermediate};
+type FollowRelation__265856120 =
+  {
+    createdAt : Timestamp__301639476;
+    follower : UserId__158757552;
+    following : UserId__158757552
+  };
+type GpsEvent__691690118 =
+  {
+    accuracy : ?Float;
+    eventType : Text;
+    message : Text;
+    timestamp : Timestamp__301639476
+  };
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type MessageRole__631012444 = {#assistant; #user};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type PostId__861309770 = Nat;
+type Post__11760342 =
+  {
+    author : UserId__158757552;
+    var comments : [Comment__220674806];
+    createdAt : Timestamp__301639476;
+    id : PostId__861309770;
+    var likedBy : [UserId__158757552];
+    message : Text;
+    territoryClaimed : [ZoneId__708458098];
+    workoutSummary : ?WorkoutSummary__828209603
+  };
+type Standing__660882045 =
+  {rank : Nat; score : Float; userId : UserId__158757552};
+type TakeoverEvent__219374741 =
+  {
+    newOwner : UserId__158757552;
+    previousOwner : ?UserId__158757552;
+    takenAt : Timestamp__301639476;
+    workoutId : WorkoutId__785291263
+  };
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type UserRole__1054455867 = {#admin; #guest; #user};
+type User__933515552 =
+  {
+    var avatarUrl : ?Text;
+    var bio : ?Text;
+    var displayName : Text;
+    var fitnessLevel : FitnessLevel__186891914;
+    id : UserId__158757552;
+    var joinedAt : Timestamp__301639476;
+    var locationLabel : Text;
+    var totalTerritoryArea : Float;
+    var username : Text;
+    var weeklyAvailabilityHours : Nat
+  };
+type WorkoutId__785291263 = Nat;
+type WorkoutStatus__912377024 = {#abandoned; #completed; #inProgress};
+type WorkoutSummary__828209603 =
+  {
+    averagePaceSecondsPerKm : ?Float;
+    caloriesBurned : ?Float;
+    completedAt : ?Timestamp__301639476;
+    distanceMetres : Float;
+    durationSeconds : Nat;
+    id : WorkoutId__785291263;
+    startedAt : Timestamp__301639476;
+    status : WorkoutStatus__912377024;
+    territoryZonesClaimed : Nat;
+    userId : UserId__158757552;
+    workoutType : WorkoutType__839758253
+  };
+type WorkoutType__839758253 =
+  {#cycling; #hiit; #other; #run; #strength; #walking; #yoga};
+type Workout__995965376 =
+  {
+    var averagePaceSecondsPerKm : ?Float;
+    var caloriesBurned : ?Float;
+    var completedAt : ?Timestamp__301639476;
+    var distanceMetres : Float;
+    var durationSeconds : Nat;
+    var elevationGainMetres : ?Float;
+    var gpsEvents : [GpsEvent__691690118];
+    id : WorkoutId__785291263;
+    var notes : ?Text;
+    var route : [Coordinate__119226227];
+    startedAt : Timestamp__301639476;
+    var status : WorkoutStatus__912377024;
+    userId : UserId__158757552;
+    workoutType : WorkoutType__839758253
+  };
+type ZoneId__708458098 = Nat;
+type Zone__886480022 =
+  {
+    var areaKm2 : Float;
+    var claimedAt : ?Timestamp__301639476;
+    id : ZoneId__708458098;
+    var name : Text;
+    var owner : ?UserId__158757552;
+    polygon : [Coordinate__119226227];
+    var takeoverHistory : [TakeoverEvent__219374741];
+    var workoutId : ?WorkoutId__785291263
+  };
+actor {
+  stable CLAUDE_API_URL : Text;
+  stable CLAUDE_MODEL : Text;
+  stable SYSTEM_PROMPT : Text;
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable competitions :
+    {
+      var root :
+        Node__46230540<CompetitionId__1068863808, Competition__1005639706>;
+      var size : Nat__490723111
+    };
+  stable conversations :
+    {
+      var root :
+        Node__46230540<UserId__158757552, CoachConversation__818276906>;
+      var size : Nat__490723111
+    };
+  stable follows :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?FollowRelation__265856120]];
+      var elementIndex : Nat__490723111
+    };
+  stable var nextCompetitionId : Nat;
+  stable var nextPostId : Nat;
+  stable var nextWorkoutId : Nat;
+  stable var nextZoneId : Nat;
+  stable posts :
+    {
+      var root : Node__46230540<PostId__861309770, Post__11760342>;
+      var size : Nat__490723111
+    };
+  stable users :
+    {
+      var root : Node__46230540<UserId__158757552, User__933515552>;
+      var size : Nat__490723111
+    };
+  stable workouts :
+    {
+      var root : Node__46230540<WorkoutId__785291263, Workout__995965376>;
+      var size : Nat__490723111
+    };
+  stable zones :
+    {
+      var root : Node__46230540<ZoneId__708458098, Zone__886480022>;
+      var size : Nat__490723111
+    }
+};

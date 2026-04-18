@@ -1,0 +1,24 @@
+{
+  "overview": "WTOL is a territory-based fitness game where your GPS-tracked runs and workouts claim real map zones. Compete globally, build weekly training plans, chat with an AI fitness coach, and share your progress on the community feed.",
+  "features": [
+    "Territory map showing owned zones by all runners",
+    "GPS workout tracking (runs + fitness activities)",
+    "AI fitness coach chatbot for personalized training plans",
+    "Monthly competitions with live standings",
+    "Community feed to share workouts and follow other runners",
+    "Leaderboard with global and location filters",
+    "User profiles with fitness level and weekly availability"
+  ],
+  "category": "fitness",
+  "tags": [
+    "fitness",
+    "running",
+    "territory-game",
+    "gps",
+    "ai-coach",
+    "community",
+    "competition",
+    "gamification"
+  ],
+  "last_updated": "2026-04-18T07:10:34.798Z"
+}

@@ -1,0 +1,250 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type ZoneInfo = 
+ record {
+   areaKm2: float64;
+   claimedAt: opt Timestamp;
+   id: ZoneId;
+   name: text;
+   owner: opt UserId;
+   polygon: vec Coordinate;
+   takeoverHistory: vec TakeoverEvent;
+   workoutId: opt WorkoutId;
+ };
+type ZoneId = nat;
+type WorkoutType = 
+ variant {
+   cycling;
+   hiit;
+   other;
+   run;
+   strength;
+   walking;
+   yoga;
+ };
+type WorkoutSummary = 
+ record {
+   averagePaceSecondsPerKm: opt float64;
+   caloriesBurned: opt float64;
+   completedAt: opt Timestamp;
+   distanceMetres: float64;
+   durationSeconds: nat;
+   id: WorkoutId;
+   startedAt: Timestamp;
+   status: WorkoutStatus;
+   territoryZonesClaimed: nat;
+   userId: UserId;
+   workoutType: WorkoutType;
+ };
+type WorkoutStatus = 
+ variant {
+   abandoned;
+   completed;
+   inProgress;
+ };
+type WorkoutId = nat;
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = 
+ record {
+   avatarUrl: opt text;
+   bio: opt text;
+   displayName: text;
+   fitnessLevel: FitnessLevel;
+   followersCount: nat;
+   followingCount: nat;
+   id: UserId;
+   joinedAt: Timestamp;
+   locationLabel: text;
+   totalTerritoryArea: float64;
+   username: text;
+   weeklyAvailabilityHours: nat;
+ };
+type UserId = principal;
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type Timestamp = int;
+type TakeoverEvent = 
+ record {
+   newOwner: UserId;
+   previousOwner: opt UserId;
+   takenAt: Timestamp;
+   workoutId: WorkoutId;
+ };
+type Standing = 
+ record {
+   rank: nat;
+   score: float64;
+   userId: UserId;
+ };
+type PostView = 
+ record {
+   author: UserId;
+   comments: vec Comment;
+   commentsCount: nat;
+   createdAt: Timestamp;
+   id: PostId;
+   likedBy: vec UserId;
+   likesCount: nat;
+   message: text;
+   territoryClaimed: vec ZoneId;
+   workoutSummary: opt WorkoutSummary;
+ };
+type PostId = nat;
+type MessageRole = 
+ variant {
+   assistant;
+   user;
+ };
+type LeaderboardEntry = 
+ record {
+   locationLabel: text;
+   rank: nat;
+   totalTerritoryArea: float64;
+   userId: UserId;
+   username: text;
+ };
+type GpsEvent = 
+ record {
+   accuracy: opt float64;
+   eventType: text;
+   message: text;
+   timestamp: Timestamp;
+ };
+type FitnessLevel = 
+ variant {
+   advanced;
+   beginner;
+   elite;
+   intermediate;
+ };
+type Coordinate = 
+ record {
+   lat: float64;
+   lng: float64;
+ };
+type CompetitionView = 
+ record {
+   challengeType: ChallengeType;
+   endsAt: Timestamp;
+   id: CompetitionId;
+   isActive: bool;
+   monthYear: text;
+   prizes: vec text;
+   standings: vec Standing;
+   startsAt: Timestamp;
+ };
+type CompetitionId = nat;
+type Comment = 
+ record {
+   author: UserId;
+   content: text;
+   createdAt: Timestamp;
+   id: nat;
+ };
+type CoachMessageId = nat;
+type CoachMessage = 
+ record {
+   content: text;
+   createdAt: Timestamp;
+   id: CoachMessageId;
+   role: MessageRole;
+ };
+type ChallengeType = 
+ variant {
+   mostDistance;
+   mostTakedowns;
+   mostTerritory;
+   mostWorkouts;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  abandonWorkout: (workoutId: WorkoutId) -> (bool);
+  addComment: (postId: PostId, content: text) -> (bool);
+  appendGpsPoint: (workoutId: WorkoutId, coord: Coordinate) -> (bool);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  claimZone: (zoneId: ZoneId, workoutId: WorkoutId) -> (bool);
+  clearConversation: () -> (bool);
+  coachTransform: (input: TransformationInput) ->
+   (TransformationOutput) query;
+  completeWorkout: (workoutId: WorkoutId, distanceMetres: float64,
+   durationSeconds: nat, caloriesBurned: opt float64,
+   averagePaceSecondsPerKm: opt float64, elevationGainMetres: opt float64) ->
+   (bool);
+  createCompetition: (monthYear: text, challengeType: ChallengeType, prizes:
+   vec text, startsAt: Timestamp, endsAt: Timestamp) -> (CompetitionId);
+  createPost: (workoutSummary: opt WorkoutSummary, territoryClaimed:
+   vec ZoneId, message: text) -> (PostId);
+  createProfile: (username: text, displayName: text, fitnessLevel:
+   FitnessLevel, locationLabel: text, weeklyAvailabilityHours: nat) -> (
+   bool);
+  createZone: (name: text, polygon: vec Coordinate, areaKm2: float64) ->
+   (ZoneId);
+  deletePost: (postId: PostId) -> (bool);
+  follow: (target: UserId) -> (bool);
+  getActiveCompetition: () -> (opt CompetitionView) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getCoachConversation: () -> (vec CoachMessage) query;
+  getCoachHistory: () -> (vec CoachMessage) query;
+  getCompetition: (competitionId: CompetitionId) ->
+   (opt CompetitionView) query;
+  getCompetitionLeaderboard: (competitionId: CompetitionId) -> (vec Standing);
+  getFollowers: (userId: UserId) -> (vec UserId) query;
+  getFollowing: (userId: UserId) -> (vec UserId) query;
+  getGlobalFeed: (limit: nat, offset: nat) -> (vec PostView) query;
+  getLeaderboard: (locationFilter: opt text, limit: nat) ->
+   (vec LeaderboardEntry) query;
+  getMyFeed: (limit: nat, offset: nat) -> (vec PostView) query;
+  getMyProfile: () -> (opt UserProfile) query;
+  getMyWorkouts: (limit: nat, offset: nat) -> (vec WorkoutSummary) query;
+  getPost: (postId: PostId) -> (opt PostView) query;
+  getProfile: (userId: UserId) -> (opt UserProfile) query;
+  getUserWorkouts: (userId: UserId, limit: nat, offset: nat) ->
+   (vec WorkoutSummary) query;
+  getWorkout: (workoutId: WorkoutId) -> (opt WorkoutSummary) query;
+  getWorkoutRoute: (workoutId: WorkoutId) -> (opt vec Coordinate) query;
+  getZone: (zoneId: ZoneId) -> (opt ZoneInfo) query;
+  getZoneHistory: (zoneId: ZoneId) -> (vec TakeoverEvent) query;
+  getZoneLeaderboard: () -> (vec record {
+                                   UserId;
+                                   float64;
+                                 }) query;
+  getZonesInBounds: (swLat: float64, swLng: float64, neLat: float64, neLng:
+   float64) -> (vec ZoneInfo) query;
+  isCallerAdmin: () -> (bool) query;
+  joinCompetition: (competitionId: CompetitionId) -> (bool);
+  likePost: (postId: PostId) -> (bool);
+  listCompetitions: () -> (vec CompetitionView) query;
+  listZones: (ownerFilter: opt UserId) -> (vec ZoneInfo) query;
+  logGpsEvent: (workoutId: WorkoutId, gpsEvent: GpsEvent) -> (bool);
+  sendCoachMessage: (content: text) -> (text);
+  startCoachSession: () -> (vec CoachMessage);
+  startWorkout: (workoutType: WorkoutType) -> (WorkoutId);
+  unfollow: (target: UserId) -> (bool);
+  unlikePost: (postId: PostId) -> (bool);
+  updateProfile: (displayName: opt text, fitnessLevel: opt FitnessLevel,
+   locationLabel: opt text, weeklyAvailabilityHours: opt nat, bio: opt text,
+   avatarUrl: opt text) -> (bool);
+}
